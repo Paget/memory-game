@@ -1,87 +1,70 @@
 app.gamePlay = function() {
 
-var twoCards = [];
-
-var compareCards;
+var previousCard = [];
 
 $('.container').on('click', '.game-tile', function(e){
-
- compareCards = (twoCards.length > 0) ? true : false;
-
+console.log("onClick", previousCard);
   var card = $(this);
-
+  var twoCardsToCompare;
   var cardCheckbox = card.find(".checkbox");
-
+  var unFlipped = cardCheckbox.prop("checked");
   var iconValue = card.find('.game-icon').text();
 
-  var unFlipped = cardCheckbox.prop("checked");
 
+//if the array is greater than 0 then there are two cards to compare
 
-  if ( !compareCards ) {
+  if (previousCard.length > 0) {
+    twoCardsToCompare = true;
 
-    if (unFlipped) {
-
-      cardCheckbox.prop('checked', false);
-
-      twoCards.push(iconValue);
-
-    }
-
-      return false;
+//if the array is not greater than 0 then there are not two cards to compare
 
   } else {
 
-      setTimeout(function(){
-        if(unFlipped) {
+    twoCardsToCompare = false;
+  }
 
-              cardCheckbox.prop('checked', false);
-                //compare the cards displayed
+//if there are not two cards to compare and the chosen cards is unflipped
 
-                var previousCard = twoCards.pop();
+  if ( !twoCardsToCompare && unFlipped && !card.hasClass('frozen')) {
 
-                if (previousCard === iconValue) {
+//add it to the array
 
+    previousCard.push(card);
+    cardCheckbox.prop("checked", false);
+    return false;
 
-                  return false;
-                } else {
+    //otherwise if there are two cards to compare
+  } else if (twoCardsToCompare && unFlipped && !card.hasClass('frozen')) {
 
-                  cardCheckbox.prop('checked', true);
+    cardCheckbox.prop("checked", false);
 
+    setTimeout(function(){
 
+      //and if the value of their icon text is equal
+      if (iconValue === previousCard[0].find('.game-icon').text() && iconValue !== "") {
 
-                  $('.game-tile').each(function(index, card){
+        //add the class of frozen to each card
+        card.addClass("frozen");
+        previousCard[0].addClass("frozen");
+        previousCard = [];
 
-                    var current = $(this).find('.game-icon').text();
+      } else {
+        // set both cards backed to unFlipped
+        cardCheckbox.prop("checked", true);
+        previousCard[0].find('.checkbox').prop("checked", true);
+        previousCard = [];
+      }
+        // empty out the previous card and return
 
-                    if( current === previousCard) {
+        return false;
+      }, 750);
 
-                      $(this).find('.checkbox').prop("checked", true);
-
-                    }
-
-                  });
-
-                  twoCards = [];
-
-                }
-
-            }
-
-          }, 1000);
-
+  } else {
+    // do nothing, ie., clicked on a card already flipped or a card already matched (frozen)
+    return false;
 
   }
 
-
-
-
-
-
-
-
-
-
 });
-
 
 };
