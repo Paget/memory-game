@@ -22,3 +22,5 @@ app.gameDeck = function (numPairs) {
 
   return shuffle(cards);
 };
+
+app.cardStore();

@@ -4,4 +4,4 @@ app.showGameStart = function() {
   var landingPageTemplate = _.template(landingPage, {variable: 'm'});
 
   $('.container').html(landingPageTemplate());
-}
+};
